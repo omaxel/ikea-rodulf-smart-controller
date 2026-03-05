@@ -1,7 +1,7 @@
 # IKEA RODULF Sit/Stand Desk - WiFi Automation
 Turn your manual IKEA RODULF desk into a smart, WiFi-controlled desk using an ESP8266 (NodeMCU) and a 2-channel relay module. Control it from any browser on your local network.
 
-![Web app](webapp.png)
+<img src="webapp.png" width="400">
 
 ## Table of Contents
 
