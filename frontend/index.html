@@ -488,6 +488,10 @@
                 <span>Rotation status</span>
                 <span id="autoState" class="badge badge--inactive"><span class="dot"></span>...</span>
             </div>
+            <div class=status-row>
+                <span>Next toggle in</span>
+                <span id="countdown">--:--</span>
+            </div>
             <div class="field">
                 <label for="autoMinutes">Interval (minutes)</label>
                 <div class="inline-field" style="margin-bottom: 0.75rem;">
@@ -529,6 +533,8 @@
     <div id="toast" class="toast"></div>
 
     <script>
+        let remainingSeconds = 0;
+
         function showToast(msg) {
             const t = document.getElementById('toast');
             t.textContent = msg;
@@ -557,6 +563,12 @@
                     document.getElementById('timeUp').value = data.timeUpMs;
                     document.getElementById('timeDown').value = data.timeDownMs;
                     document.getElementById('autoMinutes').value = data.intervalMinutes;
+                }
+
+                if (data.autoMode) {
+                    remainingSeconds = Math.floor(data.remainingMs / 1000);
+                } else {
+                    remainingSeconds = 0;
                 }
             }).catch(() => {
                 document.getElementById('heightState').innerHTML = '<span class="dot"></span>OFFLINE';
@@ -610,6 +622,30 @@
             window.visualViewport.addEventListener('resize', setVh);
         }
 
+        function startCountdown() {
+            setInterval(() => {
+                const countdown = document.getElementById("countdown");
+                const autoEnabled = document.getElementById("autoState")
+                    .textContent.includes("ENABLED");
+
+                if (!autoEnabled) {
+                    countdown.textContent = "--:--";
+                    return;
+                }
+
+                const mins = Math.floor(remainingSeconds / 60);
+                const secs = remainingSeconds % 60;
+
+                countdown.textContent =
+                    `${mins}:${secs.toString().padStart(2, '0')}`;
+
+                if (remainingSeconds > 0) {
+                    remainingSeconds--;
+                }
+            }, 1000);
+        }
+
+        startCountdown();
         setInterval(updateStatus, 3000);
         updateStatus();
     </script>
